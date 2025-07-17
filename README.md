@@ -84,7 +84,7 @@ kubectl get nodes
 ├── Vagrantfile             # Master and 2 worker node definitions
 ├── k8s-install.sh          # Installs Docker & Kubernetes components
 ├── source/
-│   └── hello.yaml          # Placeholder for your Kubernetes YAMLs
+│   └── nginx.yaml          # Placeholder for your Kubernetes YAMLs
 └── README.md   
 ```
 
