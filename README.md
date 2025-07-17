@@ -69,9 +69,11 @@ exit
 
 ```
 
-### 5. Verfiy the cluster by logging into Master Node
+### 5. Verfiy the cluster
 
 ```bash
+
+vagrant ssh master
 
 kubectl get nodes
 
