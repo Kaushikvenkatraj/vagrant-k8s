@@ -8,6 +8,7 @@ This project sets up a **multi-node Kubernetes cluster** using Vagrant, VirtualB
 
 - [Vagrant](https://www.vagrantup.com/downloads)
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) # Please refer this and update the Install script with latest script.
 
 ---
 
@@ -46,12 +47,17 @@ vagrant up
 
 vagrant ssh master
 
-sudo kubeadm init --pod-network-cidr=192.168.0.0/16
+sudo kubeadm init --apiserver-advertise-address=192.168.62.10 --pod-network-cidr=192.168.0.0/16
 
-# Enables kubectl for your user
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+sudo mkdir -p /home/vagrant/.kube
+sudo cp /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+sudo chown vagrant:vagrant /home/vagrant/.kube/config
+
+# For installing CNI Calico Plugin
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/calico.yaml 
+
+sudo kubectl restart containerd # Containerd and Kubelet are restarted to apply changes of CNI plugin in case its in NOT READY state.
+sudo systemctl restart kubelet
 
 ```
 
@@ -61,10 +67,14 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 vagrant ssh worker1
 sudo <paste-the-kubeadm-join-command-here>
+sudo kubectl restart containerd # Containerd and Kubelet are restarted to apply changes of CNI plugin
+sudo systemctl restart kubelet
 exit
 
 vagrant ssh worker2
 sudo <paste-the-kubeadm-join-command-here>
+sudo kubectl restart containerd
+sudo systemctl restart kubelet
 exit
 
 ```
